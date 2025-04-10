@@ -2,6 +2,7 @@ const txtName = document.getElementById ("Name");//nombre
 const txtNumber = document.getElementById("Number");// agregar variables de productos y cantidad
 const btnAgregar = document.getElementById("btnAgregar");
 const alertValidacionesTexto = document.getElementById("alertValidacionesTexto");
+const alertValidaciones = document.getElementById("alertValidaciones");
 const tablaListaCompras = document.getElementById("tablaListaCompras");
 const cuerpoTabla = tablaListaCompras.getElementsByTagName("tbody").item(0);
 
@@ -13,8 +14,9 @@ const precioTotal= document.getElementById("precioTotal");
 let cont = 0;
 let costoTotal= 0;
 let totalEnProductos = 0;
+let datos = new Array();// [] Almacena los elementos de la tabla
 
-function validarCantidad(){
+function validarCantidad(){ 
     if (txtNumber.value.trim().length<=0){
         return false;
     }//length<=0
@@ -68,23 +70,43 @@ isValid = false;
 
 if(isValid){
     cont ++;
-    let precio = getPrecio();
+    let precio = getPrecio(); // ultima columna
     let row = `<tr>
     <td>${cont}</td>
     <td>${txtName.value}</td>
     <td>${txtNumber.value}</td>
     <td>${precio}</td>
     </tr>`;
+    let elemento = { // (objeto)anotacion de json string", : valor
+            "cont" : cont,
+        "nombre" : txtName.value,
+        "cantidad" : txtNumber.value,
+        "precio" : precio
+    };
+datos.push(elemento);
+
+localStorage.setItem("datos", JSON.stringify(datos));
 
     cuerpoTabla.insertAdjacentHTML("beforeend", row);
     costoTotal += precio * Number(txtNumber.value);
     precioTotal.innerText ="$" + costoTotal.toFixed(2);
-    totalEnProductos += Number(txtNumber.value);
-    productosTotal.innerText = totalEnProductos;
-    contadorProductos.innerText = cont;
-
-
+productosTotal.innerText = totalEnProductos;
 contadorProductos.innerText = cont;
+ 
+    totalEnProductos += Number(txtNumber.value);
+   
+   
+
+    let resumen = {
+
+        "cont" : cont,
+        "totalEnProductos": totalEnProductos,
+        "costoTotal" : costoTotal
+        
+        };
+        
+        localStorage.setItem("resumen", JSON.stringify(resumen));
+
 
 
     txtName.value = "";
@@ -93,6 +115,33 @@ contadorProductos.innerText = cont;
 
 }// if isValid
 
-
-
 });//btnAgregar
+
+window.addEventListener("load", function(event){
+    event.preventDefault();
+if(this.localStorage.getItem("datos")!=null){
+    datos = JSON.parse(this.localStorage.getItem("datos"));
+
+}//datos !=null
+
+datos.forEach((d) => {
+    let row = `<tr> 
+               <td>${d.cont}</td>   
+               <td>${d.nombre}</td>   
+               <td>${d.cantidad}</td>   
+               <td>${d.precio}</td>   
+</tr> `;
+cuerpoTabla.insertAdjacentHTML("beforeend", row);
+});
+
+
+if(this.localStorage.getItem("resumen")!=null){
+    resumen = JSON.parse(this.localStorage.getItem("resumen"));
+    costoTotal = resumen.costoTotal;
+    totalEnProductos = resumen.totalEnProductos;
+    cont = resumen.cont;
+}// resumen !=null
+precioTotal.innerText ="$" + costoTotal.toFixed(2);
+productosTotal.innerText = totalEnProductos;
+contadorProductos.innerText = cont;
+}); //window.addEvenListener load
