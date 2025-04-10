@@ -10,6 +10,8 @@ const contadorProductos =  document.getElementById("contadorProductos");
 const productosTotal = document.getElementById("productosTotal");
 const precioTotal= document.getElementById("precioTotal");
 
+const btnLimpiar = document.getElementById("btnClear");
+
 // Numeracion de la primera columna de la tabla
 let cont = 0;
 let costoTotal= 0;
@@ -145,3 +147,38 @@ precioTotal.innerText ="$" + costoTotal.toFixed(2);
 productosTotal.innerText = totalEnProductos;
 contadorProductos.innerText = cont;
 }); //window.addEvenListener load
+
+//Agregar la funcionalidad del botón Limpiar Todo
+//Resumen
+//Tabla
+// Campos
+// Alerta
+//LocalStorage
+
+     btnLimpiar.addEventListener("click", function () {
+            
+            contadorProductos.innerText = 0;
+            productosTotal.innerText = 0;
+            precioTotal.innerText = "$ 0.00";//Resumen
+            cuerpoTabla.innerHTML = ""; //Tabla 
+            alertValidacionesTexto.innerHTML = "";//Alertas
+            alertValidaciones.style.display = "none";
+            txtName.style.border = "";
+            txtNumber.style.border = "";
+            txtName.value = "";//Campos
+            txtNumber.value = "";
+            localStorage.removeItem("datos"); //localStorage
+            localStorage.removeItem("resumen");
+        
+            cont = 0;//Reiniciar
+            totalEnProductos = 0;
+            costoTotal = 0;
+            datos = [];
+        });
+        
+
+
+
+
+
+
